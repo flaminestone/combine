@@ -1,5 +1,6 @@
 class MainpageController < ApplicationController
   def index
+    @x2t_last = X2t.last
     p 'params'
   end
 

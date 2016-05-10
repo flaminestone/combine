@@ -1,6 +1,7 @@
 <p>Combain</p>
 
-<p>x2t version</p>
+<p>Last x2t: <b><%=@x2t_last.version%></b></p>
+<p>Upload Data: <b><%=@x2t_last.created_at%></b></p>
 
 <p>Upload new x2t</p>
 <%= form_tag({action: :update}, multipart: true) do %>
