@@ -1,20 +1,38 @@
 class MainpageController < ApplicationController
+
+  ARCHIVE_PATH = '//app/combain/x2t'
+  CUSTOM_FILES_PATH = '//app/combain/custom_file'
+  RESULT_FOLDER = "#{Rails.public_path}/result_file"
+  UPLOAD_FOLDER = "#{Rails.public_path}/custom_file"
+
   def index
     @x2t_last = X2t.last
-    p 'params'
+    unless params["result"].nil?
+      send_file "public/result_file/#{params["result"]}"
+    end
   end
 
   def update
-    uploaded_io = params[:x2t]
-    File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
-      file.write(uploaded_io.read)
+    delete_files
+    case
+      when !params[:x2t].nil?
+        uploaded_io = params[:x2t]
+        File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
+          file.write(uploaded_io.read)
+        end
+        initial_training_x2t(uploaded_io.original_filename)
+      when !params[:custom_file].nil?
+        uploaded_io = params[:custom_file]
+        File.open(Rails.root.join('public', 'custom_file', uploaded_io.original_filename), 'wb') do |file|
+          file.write(uploaded_io.read)
+        end
+        result_file_name = initial_convertion_custom_file(uploaded_io.original_filename)
     end
-    initial_training(uploaded_io.original_filename)
-    redirect_to :back
+    redirect_to :action => :index, :result => result_file_name, method: :post
   end
 
-  def initial_training(filename)
-    file_path = "#{Rails.public_path}/uploads/#{filename}"
+  def initial_training_x2t(filename)
+    file_path = "#{UPLOAD_FOLDER}/#{filename}"
     @version = get_x2t_version(file_path)
     move_x2t_to_arhive_and_rename(file_path)
     add_x2t_to_db
@@ -22,7 +40,7 @@ class MainpageController < ApplicationController
 
   def move_x2t_to_arhive_and_rename(file_path)
     @name = "#{@version}_#{Random.new_seed}"
-    path_to_arhive = "//app/x2t/#{@name}"
+    path_to_arhive = "#{ARCHIVE_PATH}/#{@name}"
     `echo qq | sudo -S mv #{file_path} \"#{path_to_arhive}\"`
   end
 
@@ -37,5 +55,31 @@ class MainpageController < ApplicationController
     x2t.version = @version
     x2t.name = @name
     x2t.save
+  end
+
+  def initial_convertion_custom_file(filename)
+    convert_to = params['convert_to']
+    file_path = "#{UPLOAD_FOLDER}/#{filename}"
+    move_custom_file(file_path, filename)
+    convert_file(filename, convert_to).to_s
+  end
+
+  def move_custom_file(file_path, file_name)
+     path_to = "#{CUSTOM_FILES_PATH}/#{file_name}"
+    `echo qq | sudo -S mv #{file_path} \"#{path_to}\"`
+  end
+
+  def convert_file(input_filename, format)
+    bit_path = "#{ARCHIVE_PATH}/#{X2t.last.name}"
+    input_filepath = "#{CUSTOM_FILES_PATH}/#{input_filename}"
+    output_file_path = "#{RESULT_FOLDER}/#{File.basename(input_filepath, '.*')}.#{format}"
+    command = "echo qq | sudo -S \"#{bit_path}\" \"#{input_filepath}\" #{output_file_path}"
+    `#{command}`
+    "#{File.basename(input_filepath, '.*')}.#{format}"
+  end
+
+  def delete_files
+    `echo qq | sudo -S rm -r #{RESULT_FOLDER}/*`
+    `echo qq | sudo -S rm -r #{UPLOAD_FOLDER}/*`
   end
 end

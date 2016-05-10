@@ -11,3 +11,12 @@
     <%= file_field_tag 'x2t' %>
     <%= submit_tag 'Upload' %>
 <% end %>
+
+<div>
+  <p>Convert custom file</p>
+  <%= form_tag({action: :upload_file}, multipart: true) do %>
+      <%= file_field_tag 'custom_file' %>
+      <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"])  %>
+      <%= submit_tag 'Convert' %>
+  <% end %>
+</div>
