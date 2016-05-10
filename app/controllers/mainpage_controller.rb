@@ -68,12 +68,14 @@ class MainpageController < ApplicationController
   end
 
   def convert_file(input_filename, format)
+    rand_folder_name = Random.new_seed
+    `mkdir #{RESULT_FOLDER}/#{rand_folder_name}`
     bit_path = "#{X2T_FOLDER}/#{X2t.last.name}"
     input_filepath = "#{UPLOAD_FOLDER}/#{input_filename}"
-    output_file_path = "#{RESULT_FOLDER}/#{File.basename(input_filepath, '.*')}.#{format}"
+    output_file_path = "#{RESULT_FOLDER}/#{rand_folder_name}/#{File.basename(input_filepath, '.*')}.#{format}"
     command = "echo qq | sudo -S \"#{bit_path}\" \"#{input_filepath}\" \"#{output_file_path}\""
     `#{command}`
-    "#{File.basename(input_filepath, '.*')}.#{format}"
+    "#{rand_folder_name}/#{File.basename(input_filepath, '.*')}.#{format}"
   end
 
   def delete_files
