@@ -9332,3 +9332,7 @@ Processing by MainpageController#index as HTML
   [1m[36mX2t Load (0.1ms)[0m  [1mSELECT  "x2ts".* FROM "x2ts"  ORDER BY "x2ts"."id" DESC LIMIT 1[0m
 Sent file public/result_file/ulo.xlsx (0.1ms)
 Completed 200 OK in 1ms (ActiveRecord: 0.1ms)
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"

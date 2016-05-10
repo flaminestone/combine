@@ -12,11 +12,11 @@ class MainpageController < ApplicationController
   end
 
   def update
-    delete_files
+    # delete_files
     case
       when !params[:x2t].nil?
         uploaded_io = params[:x2t]
-        File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
+        File.open(Rails.root.join('public', 'x2t', uploaded_io.original_filename), 'wb') do |file|
           file.write(uploaded_io.read)
         end
         initial_training_x2t(uploaded_io.original_filename)
@@ -31,7 +31,7 @@ class MainpageController < ApplicationController
   end
 
   def initial_training_x2t(filename)
-    file_path = "#{UPLOAD_FOLDER}/#{filename}"
+    file_path = "#{X2T_FOLDER}/#{filename}"
     @version = get_x2t_version(file_path)
     move_x2t_to_arhive_and_rename(file_path)
     add_x2t_to_db
