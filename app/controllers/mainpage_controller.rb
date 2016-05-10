@@ -1,7 +1,6 @@
 class MainpageController < ApplicationController
 
-  ARCHIVE_PATH = '//app/combain/x2t'
-  CUSTOM_FILES_PATH = '//app/combain/custom_file'
+  X2T_FOLDER = "#{Rails.public_path}/x2t"
   RESULT_FOLDER = "#{Rails.public_path}/result_file"
   UPLOAD_FOLDER = "#{Rails.public_path}/custom_file"
 
@@ -40,7 +39,7 @@ class MainpageController < ApplicationController
 
   def move_x2t_to_arhive_and_rename(file_path)
     @name = "#{@version}_#{Random.new_seed}"
-    path_to_arhive = "#{ARCHIVE_PATH}/#{@name}"
+    path_to_arhive = "#{X2T_FOLDER}/#{@name}"
     `echo qq | sudo -S mv #{file_path} \"#{path_to_arhive}\"`
   end
 
@@ -60,20 +59,19 @@ class MainpageController < ApplicationController
   def initial_convertion_custom_file(filename)
     convert_to = params['convert_to']
     file_path = "#{UPLOAD_FOLDER}/#{filename}"
-    move_custom_file(file_path, filename)
+    chmod_custom_file(file_path)
     convert_file(filename, convert_to).to_s
   end
 
-  def move_custom_file(file_path, file_name)
-     path_to = "#{CUSTOM_FILES_PATH}/#{file_name}"
-    `echo qq | sudo -S mv #{file_path} \"#{path_to}\"`
+  def chmod_custom_file(file_path)
+    `echo qq | sudo -S chmod 777 #{file_path}`
   end
 
   def convert_file(input_filename, format)
-    bit_path = "#{ARCHIVE_PATH}/#{X2t.last.name}"
-    input_filepath = "#{CUSTOM_FILES_PATH}/#{input_filename}"
+    bit_path = "#{X2T_FOLDER}/#{X2t.last.name}"
+    input_filepath = "#{UPLOAD_FOLDER}/#{input_filename}"
     output_file_path = "#{RESULT_FOLDER}/#{File.basename(input_filepath, '.*')}.#{format}"
-    command = "echo qq | sudo -S \"#{bit_path}\" \"#{input_filepath}\" #{output_file_path}"
+    command = "echo qq | sudo -S \"#{bit_path}\" \"#{input_filepath}\" \"#{output_file_path}\""
     `#{command}`
     "#{File.basename(input_filepath, '.*')}.#{format}"
   end
