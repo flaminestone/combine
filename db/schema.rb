@@ -14,6 +14,7 @@
 ActiveRecord::Schema.define(version: 20160506142717) do
 
   create_table "x2ts", force: :cascade do |t|
+    t.string   "name"
     t.string   "version"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

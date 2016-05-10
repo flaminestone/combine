@@ -3637,3 +3637,74 @@ Started GET "/assets/mainpage.self-877aef30ae1b040ab8a3aba4e3e309a11d7f2612f44dd
 
 
 Started GET "/assets/turbolinks.self-c37727e9bd6b2735da5c311aa83fead54ed0be6cc8bd9a65309e9c5abe2cbfff.js?body=1" for 127.0.0.1 at 2016-05-10 12:27:19 +0300
+
+
+Started POST "/" for 127.0.0.1 at 2016-05-10 12:33:17 +0300
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+Processing by MainpageController#update as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"aTL3zfp7O7da0RMXbG+MZQ2pi7A9aMLyVhjY8pHi9U6pJfi/jHDS8UjwFn4dUXkTIGXARm3zgEGCaqv/Qa2TAQ==", "x2t"=>#<ActionDispatch::Http::UploadedFile:0x007f3f4ca3e4f8 @tempfile=#<Tempfile:/tmp/RackMultipart20160510-13060-1yqe0j7>, @original_filename="x2t", @content_type="application/octet-stream", @headers="Content-Disposition: form-data; name=\"x2t\"; filename=\"x2t\"\r\nContent-Type: application/octet-stream\r\n">, "commit"=>"Upload"}
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "x2ts" ("version", "created_at", "updated_at") VALUES (?, ?, ?)  [["version", "Version: 2.0.2.362"], ["created_at", "2016-05-10 09:33:18.017584"], ["updated_at", "2016-05-10 09:33:18.017584"]]
+  [1m[36m (20.0ms)[0m  [1mcommit transaction[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 468ms (ActiveRecord: 20.9ms)
+
+
+Started GET "/" for 127.0.0.1 at 2016-05-10 12:33:18 +0300
+Processing by MainpageController#index as HTML
+  Rendered mainpage/index.html.erb within layouts/application (0.8ms)
+Completed 200 OK in 19ms (Views: 18.6ms | ActiveRecord: 0.0ms)
+  [1m[35mX2t Load (0.2ms)[0m  SELECT "x2ts".* FROM "x2ts"
+  [1m[36mX2t Load (1.1ms)[0m  [1mSELECT "x2ts".* FROM "x2ts"[0m
+  [1m[36m (19.6ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (19.0ms)[0m  [1mCREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+Migrating to CreateX2ts (20160506142717)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "x2ts" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "version" varchar, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20160506142717"]]
+  [1m[35m (19.4ms)[0m  commit transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+
+
+Started POST "/" for 127.0.0.1 at 2016-05-10 12:35:17 +0300
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+Processing by MainpageController#update as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"vKFYoiI15ZJxQuokwUQJZ08wNOKtBFh5wlOLjEW+r7V8tlfQVD4M1GNj702wevwRYvx/FP2fGsoWIfiBlfHJ+g==", "commit"=>"Upload"}
+Completed 500 Internal Server Error in 1ms
+
+NoMethodError (undefined method `original_filename' for nil:NilClass):
+  app/controllers/mainpage_controller.rb:8:in `update'
+
+
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/actionpack-4.2.0/lib/action_dispatch/middleware/templates/rescues/_source.erb (4.1ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/actionpack-4.2.0/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.8ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/actionpack-4.2.0/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.8ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/actionpack-4.2.0/lib/action_dispatch/middleware/templates/rescues/diagnostics.html.erb within rescues/layout (20.2ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/_markup.html.erb (0.3ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/_inner_console_markup.html.erb within layouts/inlined_string (0.5ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/_prompt_box_markup.html.erb within layouts/inlined_string (0.4ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/style.css.erb within layouts/inlined_string (0.3ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/console.js.erb within layouts/javascript (22.8ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/main.js.erb within layouts/javascript (0.3ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/error_page.js.erb within layouts/javascript (0.4ms)
+  Rendered /home/flamine/.rvm/gems/ruby-2.2.4/gems/web-console-2.3.0/lib/web_console/templates/index.html.erb (39.1ms)
+
+
+Started POST "/" for 127.0.0.1 at 2016-05-10 12:35:23 +0300
+Processing by MainpageController#update as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"vKFYoiI15ZJxQuokwUQJZ08wNOKtBFh5wlOLjEW+r7V8tlfQVD4M1GNj702wevwRYvx/FP2fGsoWIfiBlfHJ+g==", "x2t"=>#<ActionDispatch::Http::UploadedFile:0x007f3f4c218350 @tempfile=#<Tempfile:/tmp/RackMultipart20160510-13060-1qes69h>, @original_filename="x2t", @content_type="application/octet-stream", @headers="Content-Disposition: form-data; name=\"x2t\"; filename=\"x2t\"\r\nContent-Type: application/octet-stream\r\n">, "commit"=>"Upload"}
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "x2ts" ("version", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["version", "Version: 2.0.2.362"], ["name", "Version: 2.0.2.362_216996210640353042926326630732818538075"], ["created_at", "2016-05-10 09:35:23.521810"], ["updated_at", "2016-05-10 09:35:23.521810"]]
+  [1m[36m (15.7ms)[0m  [1mcommit transaction[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 288ms (ActiveRecord: 16.4ms)
+
+
+Started GET "/" for 127.0.0.1 at 2016-05-10 12:35:23 +0300
+Processing by MainpageController#index as HTML
+  Rendered mainpage/index.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 13ms (Views: 12.2ms | ActiveRecord: 0.0ms)
+  [1m[36mX2t Load (1.1ms)[0m  [1mSELECT "x2ts".* FROM "x2ts"[0m
+  [1m[35mX2t Load (0.2ms)[0m  SELECT  "x2ts".* FROM "x2ts"  ORDER BY "x2ts"."id" ASC LIMIT 1
