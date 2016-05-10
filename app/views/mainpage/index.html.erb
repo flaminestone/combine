@@ -1,0 +1,9 @@
+<p>Combain</p>
+
+<p>x2t version</p>
+
+<p>Upload new x2t</p>
+<%= form_tag({action: :update}, multipart: true) do %>
+    <%= file_field_tag 'x2t' %>
+    <%= submit_tag 'Upload' %>
+<% end %>
