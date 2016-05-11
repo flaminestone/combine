@@ -6,8 +6,11 @@ class MainpageController < ApplicationController
 
   def index
     @x2t_last = X2t.last
-    unless params["result"].nil?
+    @errors = ''
+    if !params["result"].nil?
       send_file "public/result_file/#{params["result"]}"
+    elsif !params["error"].nil?
+      @errors = params["error"]
     end
   end
 
@@ -25,9 +28,13 @@ class MainpageController < ApplicationController
         File.open(Rails.root.join('public', 'custom_file', uploaded_io.original_filename), 'wb') do |file|
           file.write(uploaded_io.read)
         end
-        result_file_name = initial_convertion_custom_file(uploaded_io.original_filename)
+        result = initial_convertion_custom_file(uploaded_io.original_filename)
     end
-    redirect_to :action => :index, :result => result_file_name, method: :post
+    if File.exist?("public/result_file/#{result}")
+      redirect_to :action => :index, :result => result
+    else
+      redirect_to :action => :index, :error => 'File not found'
+    end
   end
 
   def initial_training_x2t(filename)
@@ -82,4 +89,5 @@ class MainpageController < ApplicationController
     `echo qq | sudo -S rm -r #{RESULT_FOLDER}/*`
     `echo qq | sudo -S rm -r #{UPLOAD_FOLDER}/*`
   end
+
 end
