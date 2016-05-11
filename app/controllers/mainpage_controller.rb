@@ -1,8 +1,9 @@
 class MainpageController < ApplicationController
-
+ helper MainpageHelper
   X2T_FOLDER = "#{Rails.public_path}/x2t"
   RESULT_FOLDER = "#{Rails.public_path}/result_file"
   UPLOAD_FOLDER = "#{Rails.public_path}/custom_file"
+  ARHIVE_FOLDER = "#{Rails.public_path}/arhive"
 
   def index
     @x2t_last = X2t.last
@@ -29,6 +30,8 @@ class MainpageController < ApplicationController
           file.write(uploaded_io.read)
         end
         result = initial_convertion_custom_file(uploaded_io.original_filename)
+      when !params[:convert_all_from].nil? || !params[:convert_all_to].nil?
+        convert_all
     end
     if File.exist?("public/result_file/#{result}")
       redirect_to :action => :index, :result => result
@@ -71,7 +74,7 @@ class MainpageController < ApplicationController
   end
 
   def chmod_custom_file(file_path)
-    `echo qq | sudo -S chmod 777 #{file_path}`
+    `echo qq | sudo -S chmod 777 \"#{file_path}\"`
   end
 
   def convert_file(input_filename, format)
@@ -88,6 +91,13 @@ class MainpageController < ApplicationController
   def delete_files
     `echo qq | sudo -S rm -r #{RESULT_FOLDER}/*`
     `echo qq | sudo -S rm -r #{UPLOAD_FOLDER}/*`
+  end
+
+  def convert_all
+    MainpageHelper::converter(ARHIVE_FOLDER,
+                RESULT_FOLDER,
+                "#{X2T_FOLDER}/#{X2t.last.name}", 'qq').convert(:xls => :xlsx)
+
   end
 
 end

@@ -21,3 +21,12 @@
   <% end %>
   <%= @errors %>
 </div>
+
+<div>
+  <p>Convert all files</p>
+  <%= form_tag({action: :convert_all}, multipart: true, convert_all: true) do %>
+      <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"])  %>
+      <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"])  %>
+      <%= submit_tag 'Convert all' %>
+  <% end %>
+</div>
