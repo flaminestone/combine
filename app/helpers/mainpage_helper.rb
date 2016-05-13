@@ -1,8 +1,13 @@
 require 'find'
+require 'zip'
 module MainpageHelper
- def self.converter(base_file_folder, output_folder, bin_path, pass)
-   Converter.new(base_file_folder, output_folder, bin_path, pass)
- end
+  def self.converter(base_file_folder, output_folder, bin_path, pass)
+    Converter.new(base_file_folder, output_folder, bin_path, pass)
+  end
+
+  def self.zip_generator(input_dir, output_file)
+    ZipFileGenerator.new(input_dir, output_file)
+  end
 end
 
 class Converter
@@ -27,8 +32,8 @@ class Converter
 
   # @param [String] folder_name - name for new folder
   def create_folder(folder_name)
-    create_folder(folder_name)
-    create_folder("#{folder_name}/not_converted")
+    create_folder_back(folder_name)
+    create_folder_back("#{folder_name}/not_converted")
   end
 
   # @param [Array] base_file_list - first list of file names
@@ -56,7 +61,7 @@ class Converter
   # @param [String] output_filename - input filename with format
   def convert_file(input_filename, output_filename)
     print_to_log "Start convert file #{input_filename} to #{output_filename}"
-    command = "echo #{@pass} | sudo -S \"#{@bin_path}\" \"#{input_filename}\" \"#{output_filename}\"  \"#{@base_output_folder}/Fonts\""
+    command = "echo #{@pass} | sudo -S \"#{@bin_path}\" \"#{input_filename}\" \"#{output_filename}\""
     print_to_log "Run command #{command}"
     `#{command}`
     print_to_log 'End convert'
@@ -71,51 +76,99 @@ class Converter
     @output_folder = "#{@base_output_folder}/#{@input_format}_to_#{@output_format}"
     create_folder @output_folder
     file_list = get_file_paths_list(@base_file_folder, @input_format)
-    file_list.each do |current_file_to_convert|
+    $status[:all] = file_list.size
+    file_list.each_with_index do |current_file_to_convert, i|
+      $status[:current] = i
       output_file_path = "#{@output_folder}/#{File.basename(current_file_to_convert, '.*')}.#{@output_format}"
       convert_file(current_file_to_convert, output_file_path)
     end
     get_file_difference(file_list, get_file_paths_list(@output_folder, @output_format))
   end
 
-      def create_folder(path)
-        FileUtils.mkdir_p(path) unless File.directory?(path)
-      rescue Errno::EEXIST
-        true
-      end
+  def create_folder_back(path)
+    FileUtils.mkdir_p(path) unless File.directory?(path)
+  rescue Errno::EEXIST
+    true
+  end
 
-      def file_exists(file_path)
-        warn '[DEPRECATION] Use file_exist? instead'
-        File.exist?(file_path)
-      end
+  def file_exists(file_path)
+    warn '[DEPRECATION] Use file_exist? instead'
+    File.exist?(file_path)
+  end
 
-      def copy_file(file_path, destination)
-        FileUtils.mkdir_p(destination) unless File.directory?(destination)
-        FileUtils.copy(file_path, destination)
-      end
+  def copy_file(file_path, destination)
+    FileUtils.mkdir_p(destination) unless File.directory?(destination)
+    FileUtils.copy(file_path, destination)
+  end
 
-      def list_file_in_directory(directory, extension = nil)
-        paths = []
-        Find.find(directory) do |path|
-          next if FileTest.directory?(path)
-          if extension.nil?
-            paths << path
-          elsif File.extname(path) == ".#{extension}"
-            paths << path
-          end
-        end
-        paths
-      rescue Errno::ENOENT
-        []
+  def list_file_in_directory(directory, extension = nil)
+    paths = []
+    Find.find(directory) do |path|
+      next if FileTest.directory?(path)
+      if extension.nil?
+        paths << path
+      elsif File.extname(path) == ".#{extension}"
+        paths << path
       end
-
-    def print_to_log(string, color_code = nil)
-      message = Time.now.strftime('%T/%d.%m.%y') + '    ' + '[' + caller[0].to_s[/\w+.rb/].chomp('.rb') + '] ' + string
-      color_code ? (puts colorize message, color_code) : (puts message)
     end
+    paths
+  rescue Errno::ENOENT
+    []
+  end
 
-    def colorize(text, color_code)
-      "\e[#{color_code}m#{text}\e[0m"
+  def print_to_log(string, color_code = nil)
+    message = Time.now.strftime('%T/%d.%m.%y') + '    ' + '[' + caller[0].to_s[/\w+.rb/].chomp('.rb') + '] ' + string
+    color_code ? (puts colorize message, color_code) : (puts message)
+  end
+
+  def colorize(text, color_code)
+    "\e[#{color_code}m#{text}\e[0m"
+  end
+
+end
+
+class ZipFileGenerator
+  # Initialize with the directory to zip and the location of the output archive.
+  def initialize(input_dir, output_file)
+    @input_dir = input_dir
+    @output_file = output_file
+  end
+
+  # Zip the input directory.
+  def write
+    entries = Dir.entries(@input_dir) - %w(. ..)
+
+    ::Zip::File.open(@output_file, ::Zip::File::CREATE) do |io|
+      write_entries entries, '', io
     end
+  end
 
+  private
+
+  # A helper method to make the recursion work.
+  def write_entries(entries, path, io)
+    entries.each do |e|
+      zip_file_path = path == '' ? e : File.join(path, e)
+      disk_file_path = File.join(@input_dir, zip_file_path)
+      puts "Deflating #{disk_file_path}"
+
+      if File.directory? disk_file_path
+        recursively_deflate_directory(disk_file_path, io, zip_file_path)
+      else
+        put_into_archive(disk_file_path, io, zip_file_path)
+      end
+    end
+  end
+
+  def recursively_deflate_directory(disk_file_path, io, zip_file_path)
+    io.mkdir zip_file_path
+    subdir = Dir.entries(disk_file_path) - %w(. ..)
+    write_entries subdir, zip_file_path, io
+  end
+
+  def put_into_archive(disk_file_path, io, zip_file_path)
+    io.get_output_stream(zip_file_path) do |f|
+      f.puts(File.open(disk_file_path, 'rb').read)
+    end
+  end
 end

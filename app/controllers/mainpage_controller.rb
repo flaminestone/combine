@@ -1,3 +1,4 @@
+require 'zip'
 class MainpageController < ApplicationController
  helper MainpageHelper
   X2T_FOLDER = "#{Rails.public_path}/x2t"
@@ -8,15 +9,18 @@ class MainpageController < ApplicationController
   def index
     @x2t_last = X2t.last
     @errors = ''
+    @all_convertation_result = ''
+    $status = {} if $status.nil?
     if !params["result"].nil?
       send_file "public/result_file/#{params["result"]}"
     elsif !params["error"].nil?
       @errors = params["error"]
+    elsif $status[:runing] == false
+      @all_convertation_result = "/public/result_file/#{$status[:result]}"
     end
   end
 
   def update
-    # delete_files
     case
       when !params[:x2t].nil?
         uploaded_io = params[:x2t]
@@ -24,21 +28,27 @@ class MainpageController < ApplicationController
           file.write(uploaded_io.read)
         end
         initial_training_x2t(uploaded_io.original_filename)
+        redirect_to :action => :index
       when !params[:custom_file].nil?
         uploaded_io = params[:custom_file]
         File.open(Rails.root.join('public', 'custom_file', uploaded_io.original_filename), 'wb') do |file|
           file.write(uploaded_io.read)
         end
         result = initial_convertion_custom_file(uploaded_io.original_filename)
+        if File.exist?("public/result_file/#{result}") && !result.nil?
+          redirect_to :action => :index, :result => result
+        else
+          redirect_to :action => :index, :error => 'File not found'
+        end
       when !params[:convert_all_from].nil? || !params[:convert_all_to].nil?
         convert_all
-    end
-    if File.exist?("public/result_file/#{result}")
-      redirect_to :action => :index, :result => result
-    else
-      redirect_to :action => :index, :error => 'File not found'
+        redirect_to :action => :index
     end
   end
+
+ def result_page
+   send_file "public/result_file/#{$status[:result]}"
+ end
 
   def initial_training_x2t(filename)
     file_path = "#{X2T_FOLDER}/#{filename}"
@@ -94,10 +104,26 @@ class MainpageController < ApplicationController
   end
 
   def convert_all
-    MainpageHelper::converter(ARHIVE_FOLDER,
-                RESULT_FOLDER,
-                "#{X2T_FOLDER}/#{X2t.last.name}", 'qq').convert(:xls => :xlsx)
+    rand_folder_name = Random.new_seed
+    `mkdir #{RESULT_FOLDER}/#{rand_folder_name}`
+    input_files_folder = "#{ARHIVE_FOLDER}/#{params['convert_all_from']}"
+    output_files_folder = "#{RESULT_FOLDER}/#{rand_folder_name}"
+    bin_path = "#{X2T_FOLDER}/#{X2t.last.name}"
+    result_folder = "#{output_files_folder}/#{params['convert_all_from']}_to_#{params['convert_all_to']}"
+    $status = {current: nil, all: nil, result: nil, :runing => true}
+    Thread.new do
+      MainpageHelper::converter(input_files_folder,
+                                output_files_folder,
+                                bin_path, 'qq').convert(params['convert_all_from'] => params['convert_all_to'])
 
+      add_result_files_to_zip(result_folder, "#{result_folder}.zip")
+      $status[:result] = "#{rand_folder_name}/#{params['convert_all_from']}_to_#{params['convert_all_to']}.zip"
+      $status[:all] = nil
+    end
+    $status = {current: nil, all: nil, result: nil, :runing => false}
   end
 
+  def add_result_files_to_zip(input_data, output_data)
+    MainpageHelper::zip_generator(input_data, output_data).write()
+  end
 end

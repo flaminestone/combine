@@ -10,6 +10,8 @@ Rails.application.routes.draw do
      post '/' => 'mainpage#upload_file'
      post '/' => 'mainpage#index'
      post '/' => 'mainpage#convert_all'
+     get 'result_page' => 'mainpage#result_page'
+     post 'result_page' => 'mainpage#result_page'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
