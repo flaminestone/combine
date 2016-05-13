@@ -13,6 +13,10 @@ class MainpageController < ApplicationController
     $status = {} if $status.nil?
     @all = $status[:all]
     @current = $status[:current]
+    @x2t_name = $status[:x2t]
+    @data = $status[:data]
+    @runing_status = $status[:runing]
+
     if !params["result"].nil?
       send_file "public/result_file/#{params["result"]}"
     elsif !params["error"].nil?
@@ -112,7 +116,7 @@ class MainpageController < ApplicationController
     output_files_folder = "#{RESULT_FOLDER}/#{rand_folder_name}"
     bin_path = "#{X2T_FOLDER}/#{X2t.last.name}"
     result_folder = "#{output_files_folder}/#{params['convert_all_from']}_to_#{params['convert_all_to']}"
-    $status = {current: nil, all: nil, result: nil, :runing => true}
+    $status = {current: nil, all: nil, result: nil, :runing => true, :x2t => "#{X2t.last.name}"}
     Thread.new do
       MainpageHelper::converter(input_files_folder,
                                 output_files_folder,
@@ -121,6 +125,7 @@ class MainpageController < ApplicationController
       add_result_files_to_zip(result_folder, "#{result_folder}.zip")
       $status[:result] = "#{rand_folder_name}/#{params['convert_all_from']}_to_#{params['convert_all_to']}.zip"
       $status[:runing] = false
+      $status[:data] = Time.now
     end
   end
 

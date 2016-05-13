@@ -30,9 +30,13 @@
       <%= submit_tag 'Convert all' %>
   <% end %>
 
-  <%= link_to "here", action: :result_page %>
+  <% if @runing_status %>
+      <progress value=<%= @current %> max=<%= @all %>></progress>
+<% else %>
+      <p>Result for convertion by <%= @x2t_name %> at <%= @data %></p><%= link_to "Download", action: :result_page %>
 
-  <progress value=<%= @current %> max=<%= @all %>></progress>
+<% end%>
+
 
 
 </div>
