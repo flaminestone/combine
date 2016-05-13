@@ -78,9 +78,9 @@ class Converter
     file_list = get_file_paths_list(@base_file_folder, @input_format)
     $status[:all] = file_list.size
     file_list.each_with_index do |current_file_to_convert, i|
-      $status[:current] = i
       output_file_path = "#{@output_folder}/#{File.basename(current_file_to_convert, '.*')}.#{@output_format}"
       convert_file(current_file_to_convert, output_file_path)
+      $status[:current] = i + 1
     end
     get_file_difference(file_list, get_file_paths_list(@output_folder, @output_format))
   end

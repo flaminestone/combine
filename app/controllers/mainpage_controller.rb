@@ -11,6 +11,8 @@ class MainpageController < ApplicationController
     @errors = ''
     @all_convertation_result = ''
     $status = {} if $status.nil?
+    @all = $status[:all]
+    @current = $status[:current]
     if !params["result"].nil?
       send_file "public/result_file/#{params["result"]}"
     elsif !params["error"].nil?
@@ -118,9 +120,8 @@ class MainpageController < ApplicationController
 
       add_result_files_to_zip(result_folder, "#{result_folder}.zip")
       $status[:result] = "#{rand_folder_name}/#{params['convert_all_from']}_to_#{params['convert_all_to']}.zip"
-      $status[:all] = nil
+      $status[:runing] = false
     end
-    $status = {current: nil, all: nil, result: nil, :runing => false}
   end
 
   def add_result_files_to_zip(input_data, output_data)
