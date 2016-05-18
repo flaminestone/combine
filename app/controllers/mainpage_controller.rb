@@ -136,7 +136,8 @@ class MainpageController < ApplicationController
 
   def get_current_result_number
     respond_to do |format|
-      format.html { render :xml => "<progress value=#{$status[:current]} max=#{$status[:all]} ></progress>" }
+      # format.html { render :xml => "<progress value=#{$status[:current]} max=#{$status[:all]} ></progress>" }
+      format.json { render :json => $status.to_json }
     end
   end
 end

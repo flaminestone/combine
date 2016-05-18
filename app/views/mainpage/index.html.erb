@@ -27,11 +27,11 @@
   <%= form_tag({action: :convert_all}, multipart: true, convert_all: true) do %>
       <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"])  %>
       <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"])  %>
-      <%= submit_tag 'Convert all', :disabled => @runing_status %>
+      <%= submit_tag 'Convert all', id: 'convert-all-button', :disabled => @runing_status %>
   <% end %>
 
   <% if @runing_status %>
-      <progress value=<%= @current %> max=<%= @all %>></progress>
+      <progress></progress>
 <% else %>
       <p>Result for convertion by <%= @x2t_name %> at <%= @data %></p><%= link_to "Download", action: :result_page %>
 <% end%>
