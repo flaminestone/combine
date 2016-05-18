@@ -1,5 +1,6 @@
 require 'zip'
 class MainpageController < ApplicationController
+  skip_before_filter :verify_authenticity_token
  helper MainpageHelper
   X2T_FOLDER = "#{Rails.public_path}/x2t"
   RESULT_FOLDER = "#{Rails.public_path}/result_file"
@@ -131,5 +132,11 @@ class MainpageController < ApplicationController
 
   def add_result_files_to_zip(input_data, output_data)
     MainpageHelper::zip_generator(input_data, output_data).write()
+  end
+
+  def get_current_result_number
+    respond_to do |format|
+      format.html { render :xml => "<progress value=#{$status[:current]} max=#{$status[:all]} ></progress>" }
+    end
   end
 end
