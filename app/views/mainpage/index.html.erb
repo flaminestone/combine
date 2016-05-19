@@ -1,22 +1,22 @@
 <p>Combain</p>
 <% if !@x2t_last.nil? %>
-<p>Last x2t: <b><%=@x2t_last.version%></b></p>
-<p>Upload Data: <b><%=@x2t_last.created_at%></b></p>
-    <% else %>
+    <p>Last x2t: <b><%= @x2t_last.version %></b></p>
+    <p>Upload Data: <b><%= @x2t_last.created_at %></b></p>
+<% else %>
     <p>Last x2t is not found </p>
 <% end %>
 
 <p>Upload new x2t</p>
 <%= form_tag({action: :update}, multipart: true) do %>
     <%= file_field_tag 'x2t' %>
-    <%= submit_tag 'Upload', :disabled => @runing_status  %>
+    <%= submit_tag 'Upload', :disabled => @runing_status %>
 <% end %>
 
 <div>
   <p>Convert custom file</p>
   <%= form_tag({action: :upload_file}, multipart: true) do %>
       <%= file_field_tag 'custom_file' %>
-      <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"])  %>
+      <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"]) %>
       <%= submit_tag 'Convert' %>
   <% end %>
   <%= @errors %>
@@ -25,17 +25,22 @@
 <div class="all_files_convert">
   <p>Convert all files</p>
   <%= form_tag({action: :convert_all}, multipart: true, convert_all: true) do %>
-      <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"])  %>
-      <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"])  %>
+      <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"]) %>
+      <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"]) %>
       <%= submit_tag 'Convert all', id: 'convert-all-button', :disabled => @runing_status %>
   <% end %>
-
-  <% if @runing_status %>
-      <progress></progress>
-<% else %>
-      <p>Result for convertion by <%= @x2t_name %> at <%= @data %></p><%= link_to "Download", action: :result_page %>
-<% end%>
 </div>
-<%   %>
 
-<div style="height: 150px; width: 150px; background-color: #730E15"  data-remote="true" id="results"></div>
+<div style="height: 300px; width: 500px; background-color: #730E15" data-remote="true" id="results">
+  <div id="progress_sector">
+   <progress id="nil-progress"></progress>
+  </div>
+  <div id="download-sector" style="display: none;">
+    <p>
+      Result for convertion by <%= @x2t_name %>
+      at <%= @data %>
+    </p>
+    <div id="format-message"></div>
+    <%= link_to "Download", action: :result_page %>
+  </div>
+</div>

@@ -117,7 +117,7 @@ class MainpageController < ApplicationController
     output_files_folder = "#{RESULT_FOLDER}/#{rand_folder_name}"
     bin_path = "#{X2T_FOLDER}/#{X2t.last.name}"
     result_folder = "#{output_files_folder}/#{params['convert_all_from']}_to_#{params['convert_all_to']}"
-    $status = {current: nil, all: nil, result: nil, :runing => true, :x2t => "#{X2t.last.name}"}
+    $status = {current: nil, all: nil, result: "#{params['convert_all_from']}_to_#{params['convert_all_to']}", :runing => true, :x2t => "#{X2t.last.name}"}
     Thread.new do
       MainpageHelper::converter(input_files_folder,
                                 output_files_folder,
