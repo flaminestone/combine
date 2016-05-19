@@ -5,6 +5,4 @@ getCurrentResults = ()->
     $("progress").remove() # delete old progresbar
     $("#results").append "<progress value=#{json.current} max=#{json.all}></progress>" if (json.runing)  # add new progresbar in element with id results
     $("#convert-all-button").attr("disabled", false) if !json.runing
-
-
 setInterval(getCurrentResults, 1000)
