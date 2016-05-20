@@ -157,4 +157,9 @@ class MainpageController < ApplicationController
       format.json { render :json => $status.to_json }
     end
   end
+
+  def kill_x2t
+    command = "echo qq | sudo killall \"#{X2t.last.name}\""
+    `#{command}`
+  end
 end
