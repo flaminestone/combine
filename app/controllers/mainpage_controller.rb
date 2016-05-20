@@ -9,7 +9,6 @@ class MainpageController < ApplicationController
 
   def index
     @x2t_last = X2t.last
-    @errors = {}
     @all_convertation_result = ''
     $status = {} if $status.nil?
     @all = $status[:all]
@@ -20,8 +19,6 @@ class MainpageController < ApplicationController
 
     if !params["result"].nil?
       send_file "public/result_file/#{params["result"]}"
-    elsif !params["error"].nil?
-      @errors = params["error"]
     elsif $status[:runing] == false
       @all_convertation_result = "/public/result_file/#{$status[:result]}"
     end
