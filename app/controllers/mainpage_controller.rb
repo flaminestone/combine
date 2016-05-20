@@ -16,7 +16,6 @@ class MainpageController < ApplicationController
     @x2t_name = $status[:x2t]
     @data = $status[:data]
     @runing_status = $status[:runing]
-
     if !params["result"].nil?
       send_file "public/result_file/#{params["result"]}"
     elsif $status[:runing] == false
@@ -125,7 +124,12 @@ class MainpageController < ApplicationController
     `echo qq | sudo -S rm -r #{filepath}`
   end
 
+  def delete_all_old_results
+    `echo qq | sudo -S rm -r #{RESULT_FOLDER}/*`
+  end
+
   def convert_all
+    delete_all_old_results
     rand_folder_name = Random.new_seed
     `mkdir #{RESULT_FOLDER}/#{rand_folder_name}`
     input_files_folder = "#{ARHIVE_FOLDER}/#{params['convert_all_from']}"
