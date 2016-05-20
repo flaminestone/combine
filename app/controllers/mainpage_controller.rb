@@ -1,7 +1,7 @@
 require 'zip'
 class MainpageController < ApplicationController
   skip_before_filter :verify_authenticity_token
- helper MainpageHelper
+  helper MainpageHelper
   X2T_FOLDER = "#{Rails.public_path}/x2t"
   RESULT_FOLDER = "#{Rails.public_path}/result_file"
   UPLOAD_FOLDER = "#{Rails.public_path}/custom_file"
@@ -9,7 +9,7 @@ class MainpageController < ApplicationController
 
   def index
     @x2t_last = X2t.last
-    @errors = ''
+    @errors = {}
     @all_convertation_result = ''
     $status = {} if $status.nil?
     @all = $status[:all]
@@ -27,49 +27,60 @@ class MainpageController < ApplicationController
     end
   end
 
-  def update
-    case
-      when !params[:x2t].nil?
-        uploaded_io = params[:x2t]
-        File.open(Rails.root.join('public', 'x2t', uploaded_io.original_filename), 'wb') do |file|
-          file.write(uploaded_io.read)
-        end
-        initial_training_x2t(uploaded_io.original_filename)
-        redirect_to :action => :index
-      when !params[:custom_file].nil?
-        uploaded_io = params[:custom_file]
-        File.open(Rails.root.join('public', 'custom_file', uploaded_io.original_filename), 'wb') do |file|
-          file.write(uploaded_io.read)
-        end
-        result = initial_convertion_custom_file(uploaded_io.original_filename)
-        if File.exist?("public/result_file/#{result}") && !result.nil?
-          redirect_to :action => :index, :result => result
-        else
-          redirect_to :action => :index, :error => 'File not found'
-        end
-      when !params[:convert_all_from].nil? || !params[:convert_all_to].nil?
-        convert_all
-        redirect_to :action => :index
-      else
-        redirect_to :action => :index
+  def upload_x2t
+    if params[:x2t].nil?
+      flash[:notice] = 'Need to load file'
+    else
+      uploaded_io = params[:x2t]
+      File.open(Rails.root.join('public', 'x2t', uploaded_io.original_filename), 'wb') do |file|
+        file.write(uploaded_io.read)
+      end
+      initial_training_x2t(uploaded_io.original_filename)
+      unless flash[:error].nil?
+        delete_file("#{X2T_FOLDER}/#{uploaded_io.original_filename}")
+      end
+    end
+    redirect_to :action => :index
+  end
+
+  def upload_file
+    uploaded_io = params[:custom_file]
+    File.open(Rails.root.join('public', 'custom_file', uploaded_io.original_filename), 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+    result = initial_convertion_custom_file(uploaded_io.original_filename)
+    if File.exist?("public/result_file/#{result}") && !result.nil?
+      redirect_to :action => :index, :result => result
+    else
+      redirect_to :action => :index, :error => 'File not found'
     end
   end
 
- def result_page
-   send_file "public/result_file/#{$status[:result]}"
- end
+  def convert_all_by_format
+    convert_all
+    redirect_to :action => :index
+  end
 
   def initial_training_x2t(filename)
     file_path = "#{X2T_FOLDER}/#{filename}"
-    @version = get_x2t_version(file_path)
+    version = get_x2t_version(file_path)
+    if version.nil?
+      flash[:error] = 'X2t file is not valid. Try use other build'
+      return
+    end
+    @version = version
     move_x2t_to_arhive_and_rename(file_path)
     add_x2t_to_db
   end
 
+  def result_page
+    send_file "public/result_file/#{$status[:result]}"
+  end
+
   def move_x2t_to_arhive_and_rename(file_path)
-    @name = "#{@version}_#{Random.new_seed}"
+    @name = "#{@version}"
     path_to_arhive = "#{X2T_FOLDER}/#{@name}"
-    `echo qq | sudo -S mv #{file_path} \"#{path_to_arhive}\"`
+    `echo qq | sudo -S mv -f #{file_path} \"#{path_to_arhive}\"`
   end
 
   def get_x2t_version(file_path)
@@ -107,9 +118,8 @@ class MainpageController < ApplicationController
     "#{rand_folder_name}/#{File.basename(input_filepath, '.*')}.#{format}"
   end
 
-  def delete_files
-    `echo qq | sudo -S rm -r #{RESULT_FOLDER}/*`
-    `echo qq | sudo -S rm -r #{UPLOAD_FOLDER}/*`
+  def delete_file(filepath)
+    `echo qq | sudo -S rm -r #{filepath}`
   end
 
   def convert_all

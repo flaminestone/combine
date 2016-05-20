@@ -7,14 +7,14 @@
 <% end %>
 
 <p>Upload new x2t</p>
-<%= form_tag({action: :update}, multipart: true) do %>
+<%= form_tag('/upload_x2t', multipart: true) do %>
     <%= file_field_tag 'x2t' %>
-    <%= submit_tag 'Upload', :disabled => @runing_status %>
+    <%= submit_tag 'Upload', id: 'upload_x2t_button', :disabled => @runing_status  %>
 <% end %>
 
 <div>
   <p>Convert custom file</p>
-  <%= form_tag({action: :upload_file}, multipart: true) do %>
+  <%= form_tag('/upload_file', multipart: true) do %>
       <%= file_field_tag 'custom_file' %>
       <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"]) %>
       <%= submit_tag 'Convert' %>
@@ -24,7 +24,7 @@
 
 <div class="all_files_convert">
   <p>Convert all files</p>
-  <%= form_tag({action: :convert_all}, multipart: true, convert_all: true) do %>
+  <%= form_tag('/convert_all_by_format', multipart: true, convert_all: true) do %>
       <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"]) %>
       <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"]) %>
       <%= submit_tag 'Convert all', id: 'convert-all-button', :disabled => @runing_status %>
@@ -44,3 +44,12 @@
     <%= link_to "Download", action: :result_page %>
   </div>
 </div>
+
+
+
+<% if flash[:error] %>
+    <div class="notice"><%= flash[:error] %></div>
+<% end %>
+<% if flash[:notice] %>
+    <div class="notice"><%= flash[:notice] %></div>
+<% end %>

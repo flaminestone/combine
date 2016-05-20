@@ -6,10 +6,10 @@ Rails.application.routes.draw do
    root 'mainpage#index'
 
   # Example of regular route:
-     post '/' => 'mainpage#update'
-     post '/' => 'mainpage#upload_file'
+     post 'upload_x2t' => 'mainpage#upload_x2t'
+     post 'upload_file' => 'mainpage#upload_file'
+     post 'convert_all_by_format' => 'mainpage#convert_all_by_format'
      post '/' => 'mainpage#index'
-     post '/' => 'mainpage#convert_all'
      get 'result_page' => 'mainpage#result_page'
      get '/get_current_result_number' => 'mainpage#get_current_result_number'
      post '/results' => 'mainpage#get_current_result_number'
