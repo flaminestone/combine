@@ -25,7 +25,7 @@ class MainpageController < ApplicationController
 
   def upload_x2t
     if params[:x2t].nil?
-      flash[:notice] = 'Need to load file'
+      flash[:error] = 'Need to load file'
     else
       uploaded_io = params[:x2t]
       File.open(Rails.root.join('public', 'x2t', uploaded_io.original_filename), 'wb') do |file|
@@ -41,7 +41,7 @@ class MainpageController < ApplicationController
 
   def upload_file
     if params[:custom_file].nil?
-      flash[:notice] = 'Need to load file'
+      flash[:error] = 'Need to load file'
       redirect_to :action => :index
     else
       uploaded_io = params[:custom_file]
