@@ -50,6 +50,8 @@ class MainpageController < ApplicationController
       when !params[:convert_all_from].nil? || !params[:convert_all_to].nil?
         convert_all
         redirect_to :action => :index
+      else
+        redirect_to :action => :index
     end
   end
 
