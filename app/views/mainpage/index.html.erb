@@ -1,7 +1,7 @@
 <p>Combain</p>
 <% if !@x2t_last.nil? %>
-    <p>Last x2t: <b><%= @x2t_last.version %></b></p>
-    <p>Upload Data: <b><%= @x2t_last.created_at %></b></p>
+    <p>Last x2t: <b><%= X2t.last.version %></b></p>
+    <p>Upload Data: <b><%= X2t.last.created_at %></b></p>
 <% else %>
     <p>Last x2t is not found </p>
 <% end %>

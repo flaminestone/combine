@@ -8,7 +8,6 @@ class MainpageController < ApplicationController
   ARHIVE_FOLDER = "#{Rails.public_path}/arhive"
 
   def index
-    @x2t_last = X2t.last
     $status = {} if $status.nil?
     @all = $status[:all]
     @current = $status[:current]
