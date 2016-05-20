@@ -81,6 +81,7 @@ class Converter
       output_file_path = "#{@output_folder}/#{File.basename(current_file_to_convert, '.*')}.#{@output_format}"
       convert_file(current_file_to_convert, output_file_path)
       $status[:current] = i + 1
+      $status[:filename] = File.basename(current_file_to_convert)
     end
     get_file_difference(file_list, get_file_paths_list(@output_folder, @output_format))
   end

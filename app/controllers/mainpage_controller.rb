@@ -13,6 +13,7 @@ class MainpageController < ApplicationController
     @current = $status[:current]
     @x2t_name = $status[:x2t]
     @data = $status[:data]
+    @filename = $status[:filename]
     @runing_status = $status[:runing]
     if !params["result"].nil?
       send_file "public/result_file/#{params["result"]}"
@@ -142,6 +143,7 @@ class MainpageController < ApplicationController
       $status[:result] = "#{rand_folder_name}/#{params['convert_all_from']}_to_#{params['convert_all_to']}.zip"
       $status[:runing] = false
       $status[:data] = Time.now
+      $status[:filename] = ''
     end
   end
 
