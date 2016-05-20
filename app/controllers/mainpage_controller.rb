@@ -44,15 +44,21 @@ class MainpageController < ApplicationController
   end
 
   def upload_file
-    uploaded_io = params[:custom_file]
-    File.open(Rails.root.join('public', 'custom_file', uploaded_io.original_filename), 'wb') do |file|
-      file.write(uploaded_io.read)
-    end
-    result = initial_convertion_custom_file(uploaded_io.original_filename)
-    if File.exist?("public/result_file/#{result}") && !result.nil?
-      redirect_to :action => :index, :result => result
+    if params[:custom_file].nil?
+      flash[:notice] = 'Need to load file'
+      redirect_to :action => :index
     else
-      redirect_to :action => :index, :error => 'File not found'
+      uploaded_io = params[:custom_file]
+      File.open(Rails.root.join('public', 'custom_file', uploaded_io.original_filename), 'wb') do |file|
+        file.write(uploaded_io.read)
+      end
+      result = initial_convertion_custom_file(uploaded_io.original_filename)
+      if File.exist?("public/result_file/#{result}") && !result.nil?
+        send_file "public/result_file/#{result}"
+      else
+        flash[:error] = 'Convertion failed'
+        redirect_to :action => :index
+      end
     end
   end
 
