@@ -33,6 +33,7 @@ class MainpageController < ApplicationController
         delete_file("#{X2T_FOLDER}/#{uploaded_io.original_filename}")
       end
     end
+    flash[:notice] = 'New x2t is loaded'
     redirect_to :action => :index
   end
 

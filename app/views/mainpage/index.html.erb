@@ -1,50 +1,80 @@
-<p>Combain</p>
-<% if !@x2t_last.nil? %>
-    <p>Last x2t: <b><%= X2t.last.version %></b></p>
-    <p>Upload Data: <b><%= X2t.last.created_at %></b></p>
-<% else %>
-    <p>Last x2t is not found </p>
-<% end %>
+<div class="jumbotron">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
 
-<p>Upload new x2t</p>
-<%= form_tag('/upload_x2t', multipart: true) do %>
-    <%= file_field_tag 'x2t' %>
-    <%= submit_tag 'Upload', id: 'upload_x2t_button', :disabled => @runing_status  %>
-<% end %>
+      <div class="page-header">
+        <h1>Combain</h1>
+      </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+          <div class="well">
 
-<div>
-  <p>Convert custom file</p>
-  <%= form_tag('/upload_file', multipart: true) do %>
-      <%= file_field_tag 'custom_file' %>
-      <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"]) %>
-      <%= submit_tag 'Convert' %>
-  <% end %>
-</div>
+          <% if !X2t.last.nil? %>
+          <span>
+          <p>Current X2t: <b><%= X2t.last.version %></b></span><span>   at  <b><%= X2t.last.created_at %></span> </p>
+              </span>
+          <% else %>
+              <p>Last x2t is not found </p>
+          <% end %>
+        </div>
+        </div>
+        <div class="col-md-4">
+          <%= form_tag('/upload_x2t', multipart: true) do %>
+              <div class="col-md-2">
+                <div class="file_upload">
+                  <span>New x2t</span>
+                  <%= file_field_tag 'x2t', id: "upload_x2t_input" %>
+                </div>
+              </div>
+              <%= submit_tag 'Upload', id: 'upload_x2t_button', class: "hidden", :disabled => @runing_status %>
+          <% end %>
+        </div>
+    </div>
+    <div class="row">
+    <div>
+      <p>Convert custom file</p>
+      <%= form_tag('/upload_file', multipart: true) do %>
+          <%= file_field_tag 'custom_file' %>
+          <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"]) %>
+          <%= submit_tag 'Convert' %>
+      <% end %>
+    </div>
 
-<div class="all_files_convert">
-  <p>Convert all files</p>
-  <%= form_tag('/convert_all_by_format', multipart: true, convert_all: true) do %>
-      <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"]) %>
-      <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"]) %>
-      <%= submit_tag 'Convert all', id: 'convert-all-button', :disabled => @runing_status %>
-  <% end %>
-</div>
+    <div class="all_files_convert">
+      <p>Convert all files</p>
+      <%= form_tag('/convert_all_by_format', multipart: true, convert_all: true) do %>
+          <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"]) %>
+          <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"]) %>
+          <%= submit_tag 'Convert all', id: 'convert-all-button', :disabled => @runing_status %>
+      <% end %>
+    </div>
 
-<div style="height: 300px; width: 500px; background-color: #730E15" data-remote="true" id="results">
-  <div id="progress_sector">
-   <progress id="nil-progress"></progress>
-    <div id="current_filename"></div>
+    <div style="height: 300px; width: 500px; background-color: #730E15" data-remote="true" id="results">
+      <div id="progress_sector">
+        <progress id="nil-progress"></progress>
+        <div id="current_filename"></div>
+      </div>
+      <div id="download-sector" style="display: none;">
+        <p>
+          Result for convertion by <%= @x2t_name %>
+          at <%= @data %>
+        </p>
+        <div id="format-message"></div>
+        <%= link_to "Download", action: :result_page %>
+      </div>
+    </div>
+
+    <%= form_tag('/kill_x2t', multipart: true) do %>
+        <%= submit_tag 'Kill x2t', id: 'kill_x2t_button' %>
+    <% end %>
   </div>
-  <div id="download-sector" style="display: none;">
-    <p>
-      Result for convertion by <%= @x2t_name %>
-      at <%= @data %>
-    </p>
-    <div id="format-message"></div>
-    <%= link_to "Download", action: :result_page %>
   </div>
 </div>
-
-<%= form_tag('/kill_x2t', multipart: true) do %>
-    <%= submit_tag 'Kill x2t', id: 'kill_x2t_button'  %>
-<% end %>
+<script>
+  document.getElementById('upload_x2t_input').onchange = function() {
+    document.getElementById('upload_x2t_button').click()
+  };
+</script>

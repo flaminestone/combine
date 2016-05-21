@@ -1,3 +1,41 @@
 // Place all the styles related to the mainpage controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.file_upload {
+  /* Для того, чтобы спозиционировать input
+     относительно контейнера. */
+  position: relative;
+  /* Скрываем неумещающуюся часть input-а. */
+  overflow: hidden;
+
+  /* Украшательство: */
+  background: #eee;
+  border: 1px solid #ccc;
+  font-size: 22px;
+  line-height: 1;
+  text-align: center;
+  padding: 20px;
+  width: 100px;
+}
+
+.file_upload input[type=file] {
+  /* Позиционируем правый верхний край
+     input поверх нашего контейнера.
+     Правый верхний потому как именно там
+     у нас кнопка. */
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  /* Делаем input побольше, чтобы он точно
+     перекрыл контейнер. */
+  font-size: 4em;
+
+  /* Делаем input невидимым. По-другому нельзя,
+     иначе браузер не будет на него реагировать. */
+  opacity: 0;
+  filter: alpha(opacity=0);
+
+  /*  Украшательства: */
+  cursor: pointer;
+}
