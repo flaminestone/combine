@@ -14,6 +14,7 @@ Rails.application.routes.draw do
      get '/get_current_result_number' => 'mainpage#get_current_result_number'
      post '/results' => 'mainpage#get_current_result_number'
      post 'result_page' => 'mainpage#result_page'
+     post 'kill_x2t' => 'mainpage#kill_x2t'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

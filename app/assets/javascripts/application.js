@@ -14,4 +14,5 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require toastr_rails
+//= require bootstrap.min
 //= require_tree .

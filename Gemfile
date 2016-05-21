@@ -26,6 +26,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'carrierwave'
 gem 'toastr_rails'
 gem 'rubyzip'
+gem 'bootstrap-sass'
 # Use Unicorn as the app server
 # gem 'unicorn'
 
