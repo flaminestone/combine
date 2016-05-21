@@ -30,7 +30,6 @@
         <% end %>
       </div>
     </div>
-
     <div class="row">
       <div class="col-md-8">
         <div class="well">
@@ -55,20 +54,34 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="well">
+          <div class="all_files_convert">
+            <%= form_tag('/convert_all_by_format', multipart: true, convert_all: true) do %>
+                <span>
+                  <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"]) %>
+                </span>
+                <span class="pull-right">
+                <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"]) %>
+                  </span>
+                <%= submit_tag 'Convert all', id: 'convert-all-button', class: "hidden", :disabled => @runing_status %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="file_upload" id="all_file_convert">
+          <span>Convert All</span>
+        </div>
+      </div>
+
+    </div>
 
 
     <div class="row">
 
-      <div class="all_files_convert">
-        <p>Convert all files</p>
-        <%= form_tag('/convert_all_by_format', multipart: true, convert_all: true) do %>
-            <%= select_tag :convert_all_from, options_for_select(["doc", "xls", "ppt"]) %>
-            <%= select_tag :convert_all_to, options_for_select(["docx", "xlsx", "pptx"]) %>
-            <%= submit_tag 'Convert all', id: 'convert-all-button', :disabled => @runing_status %>
-        <% end %>
-      </div>
-
-      <div style="height: 300px; width: 500px; background-color: #730E15" data-remote="true" id="results">
+      <div id="results">
         <div id="progress_sector">
           <progress id="nil-progress"></progress>
           <div id="current_filename"></div>
@@ -96,5 +109,9 @@
 
   document.getElementById('custom_file_convert').onclick = function () {
     document.getElementById('custom_file_button_convert').click()
+  };
+
+  document.getElementById('all_file_convert').onclick = function () {
+    document.getElementById('convert-all-button').click()
   };
 </script>
