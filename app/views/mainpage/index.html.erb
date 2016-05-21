@@ -2,7 +2,6 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-
         <div class="page-header">
           <h1>Combain</h1>
         </div>
@@ -15,7 +14,7 @@
           <span>
           <p>Current X2t: <b><%= X2t.last.version %></b>
           </span>
-          <span> at <b><%= X2t.last.created_at %></span></p>
+              <span> at <b><%= X2t.last.created_at %></span></p>
           <% else %>
               <p>Last x2t is not found </p>
           <% end %>
@@ -23,25 +22,42 @@
       </div>
       <div class="col-md-4">
         <%= form_tag('/upload_x2t', multipart: true) do %>
-            <div class="col-md-2">
-              <div class="file_upload">
-                <span>New x2t</span>
-                <%= file_field_tag 'x2t', id: "upload_x2t_input" %>
-              </div>
+            <div class="file_upload">
+              <span>New x2t</span>
+              <%= file_field_tag 'x2t', id: "upload_x2t_input" %>
             </div>
             <%= submit_tag 'Upload', id: 'upload_x2t_button', class: "hidden", :disabled => @runing_status %>
         <% end %>
       </div>
     </div>
+
     <div class="row">
-      <div>
-        <p>Convert custom file</p>
-        <%= form_tag('/upload_file', multipart: true) do %>
-            <%= file_field_tag 'custom_file' %>
-            <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"]) %>
-            <%= submit_tag 'Convert' %>
-        <% end %>
+      <div class="col-md-8">
+        <div class="well">
+          <%= form_tag('/upload_file', multipart: true) do %>
+              <div class="row">
+                <div class="col-md-4" style="margin-top: 10px;">
+                  <%= file_field_tag 'custom_file' %>
+                </div>
+                <div class="col-md-8">
+                  <span class="pull-right">
+                    <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"]) %>
+                  </span>
+                </div>
+                <%= submit_tag 'Convert', class: "hidden", id: "custom_file_button_convert" %>
+              </div>
+          <% end %>
+        </div>
       </div>
+      <div class="col-md-4">
+        <div class="file_upload" id="custom_file_convert">
+          <span>Convert</span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
 
       <div class="all_files_convert">
         <p>Convert all files</p>
@@ -76,5 +92,9 @@
 <script>
   document.getElementById('upload_x2t_input').onchange = function () {
     document.getElementById('upload_x2t_button').click()
+  };
+
+  document.getElementById('custom_file_convert').onclick = function () {
+    document.getElementById('custom_file_button_convert').click()
   };
 </script>
