@@ -135,7 +135,7 @@ class MainpageController < ApplicationController
     bin_path = "#{X2T_FOLDER}/#{X2t.last.name}"
     result_folder = "#{output_files_folder}/#{params['convert_all_from']}_to_#{params['convert_all_to']}"
     $status = {current: nil, all: nil, result: "#{params['convert_all_from']}_to_#{params['convert_all_to']}", :runing => true, :x2t => "#{X2t.last.name}"}
-    Thread.new do
+    @thr = Thread.new do
       MainpageHelper::converter(input_files_folder,
                                 output_files_folder,
                                 bin_path, 'qq').convert(params['convert_all_from'] => params['convert_all_to'])
@@ -163,5 +163,10 @@ class MainpageController < ApplicationController
     command = "echo qq | sudo -S killall \"#{X2t.last.name}\""
     `#{command}`
     redirect_to :action => :index
+  end
+
+  def stop_all_convertion
+    Thread.kill(@thr) unless @thr.nil?
+    kill_x2t
   end
 end
