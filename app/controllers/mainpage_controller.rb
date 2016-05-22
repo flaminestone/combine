@@ -160,7 +160,7 @@ class MainpageController < ApplicationController
   end
 
   def kill_x2t
-    command = "echo qq | sudo killall \"#{X2t.last.name}\""
+    command = "echo qq | sudo -S killall \"#{X2t.last.name}\""
     `#{command}`
     redirect_to :action => :index
   end
