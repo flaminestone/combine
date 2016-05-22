@@ -39,7 +39,7 @@
               </div>
               <div class="col-md-8">
                   <span class="pull-right">
-                    <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx"]) %>
+                    <%= select_tag :convert_to, options_for_select(["docx", "xlsx", "pptx", "odt", "ods", "odp", "rtf", "txt", "html", "csv"]) %>
                   </span>
               </div>
               <%= submit_tag 'Convert', class: "hidden", id: "custom_file_button_convert" %>
