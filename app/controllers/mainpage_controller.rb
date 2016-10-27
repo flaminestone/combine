@@ -1,6 +1,5 @@
 require 'zip'
 class MainpageController < ApplicationController
-  skip_before_filter :verify_authenticity_token
   helper MainpageHelper
   X2T_FOLDER = "#{Rails.public_path}/x2t"
   RESULT_FOLDER = "#{Rails.public_path}/result_file"
@@ -138,7 +137,7 @@ class MainpageController < ApplicationController
     @thr = Thread.new do
       MainpageHelper::converter(input_files_folder,
                                 output_files_folder,
-                                bin_path, 'qq').convert(params['convert_all_from'] => params['convert_all_to'])
+                                bin_path).convert(params['convert_all_from'] => params['convert_all_to'])
 
       add_result_files_to_zip(result_folder, "#{result_folder}.zip")
       $status[:result] = "#{rand_folder_name}/#{params['convert_all_from']}_to_#{params['convert_all_to']}.zip"
